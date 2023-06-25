@@ -15,13 +15,13 @@ class PostController extends Controller
         // $posts = Post::with('author:id,username')->get();
         // return PostDetailResource::collection($posts);
         $posts = Post::all();
-        return PostDetailResource::collection($posts->loadMissing('author:id,username'));
+        return PostDetailResource::collection($posts->loadMissing(['author:id,username', 'comments:id,post_id,user_id,comments_content,created_at']));
     }
 
     public function showDetails($id)
     {
         $post = Post::with('author:id,username')->findOrFail($id);
-        return new PostDetailResource($post);
+        return new PostDetailResource($post->loadMissing(['author:id,username', 'comments:id,post_id,user_id,comments_content,created_at']));
     }
 
     // public function showEager($id)
