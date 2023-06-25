@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('title', 255);
-            $table->text('news_contents');
+            $table->text('news_content');
             $table->unsignedBigInteger('author');
             $table->timestamps();
 
