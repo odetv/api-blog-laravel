@@ -11,7 +11,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthenticationController::class, 'logout']); //Logout
     Route::get('/me', [AuthenticationController::class, 'me']); //Check Token API User
     Route::post('/posts', [PostController::class, 'store']); //Create Posts
-    Route::patch('/posts/{id}', [PostController::class, 'update'])->middleware('post-owner'); //Update Posts
+    Route::post('/posts/{id}', [PostController::class, 'update'])->middleware('post-owner'); //Update Posts
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->middleware('post-owner'); //Delete Posts
 
     Route::post('/comment', [CommentController::class, 'store']); //Create Comments

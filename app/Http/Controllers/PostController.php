@@ -54,11 +54,19 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
+        $image = null;
         $validated = $request->validate([
             'title' => 'required|max:255',
             'news_content' => 'required',
         ]);
+        if ($request->fileImage) {
+            $fileImageName = $this->generateRandomString();
+            $extension = $request->fileImage->extension();
+            $image = $fileImageName . '.' . $extension;
+            Storage::putFileAs('image', $request->fileImage, $image);
+        }
 
+        $request['image'] = $image;
         $post = Post::findOrFail($id);
         $post->update($request->all());
 
