@@ -25,40 +25,42 @@ class PostController extends Controller
         return new PostDetailResource($post->loadMissing(['author:id,username', 'comments:id,post_id,user_id,comments_content,created_at']));
     }
 
-    // public function showEager($id)
+    // public function store(Request $request)
     // {
-    //     $post = Post::findOrFail($id);
-    //     return new PostDetailResource($post);
-    // }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'news_content' => 'required',
-        ]);
-
-        $image = null;
-        if ($request->fileImage) {
-            $fileImageName = $this->generateRandomString();
-            $extension = $request->fileImage->extension();
-            $image = $fileImageName . '.' . $extension;
-            Storage::putFileAs('image', $request->fileImage, $image);
-        }
-        $request['image'] = $image;
-        $request['id_user'] = Auth::user()->id;
-        $post = Post::create($request->all());
-
-        return new PostDetailResource($post->loadMissing('author:id,username'));
-    }
-
-    // public function update(Request $request, $id)
-    // {
-    //     $image = null;
     //     $validated = $request->validate([
     //         'title' => 'required|max:255',
     //         'news_content' => 'required',
     //     ]);
+
+    //     $image = null;
+    //     if ($request->fileImage) {
+    //         $fileImageName = $this->generateRandomString();
+    //         $extension = $request->fileImage->extension();
+    //         $image = $fileImageName . '.' . $extension;
+    //         Storage::putFileAs('image', $request->fileImage, $image);
+    //     }
+    //     $request['image'] = $image;
+    //     $request['id_user'] = Auth::user()->id;
+    //     $post = Post::create($request->all());
+
+    //     return new PostDetailResource($post->loadMissing('author:id,username'));
+    // }
+
+    // public function update(Request $request, $id)
+    // {
+    //     $validated = $request->validate([
+    //         'title' => 'required|max:255',
+    //         'news_content' => 'required',
+    //     ]);
+
+    //     $post = Post::findOrFail($id);
+
+    //     // Hapus gambar lama jika ada
+    //     if ($post->image) {
+    //         Storage::delete('image/' . $post->image);
+    //     }
+
+    //     $image = null;
     //     if ($request->fileImage) {
     //         $fileImageName = $this->generateRandomString();
     //         $extension = $request->fileImage->extension();
@@ -66,33 +68,65 @@ class PostController extends Controller
     //         Storage::putFileAs('image', $request->fileImage, $image);
     //     }
 
-    //     $request['image'] = $image;
-    //     $post = Post::findOrFail($id);
-    //     $post->update($request->all());
+    //     $post->update([
+    //         'title' => $request->title,
+    //         'news_content' => $request->news_content,
+    //         'image' => $image,
+    //         'id_user' => Auth::user()->id,
+    //     ]);
 
     //     return new PostDetailResource($post->loadMissing('author:id,username'));
     // }
+
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'news_content' => 'required',
+            'fileImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Batasan jenis dan ukuran file gambar (opsional)
+        ]);
+
+        $image = null;
+        if ($request->hasFile('fileImage') && $request->file('fileImage')->isValid()) {
+            $fileImageName = $this->generateRandomString();
+            $extension = $request->file('fileImage')->getClientOriginalExtension();
+            $image = $fileImageName . '.' . $extension;
+            $request->file('fileImage')->storeAs('public/image', $image);
+        }
+
+        $request->merge([
+            'image' => $image,
+            'id_user' => Auth::user()->id,
+        ]);
+
+        $post = Post::create($request->all());
+
+        return new PostDetailResource($post->loadMissing('author:id,username'));
+    }
+
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'title' => 'required|max:255',
             'news_content' => 'required',
+            'fileImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Batasan jenis dan ukuran file gambar (opsional)
         ]);
 
         $post = Post::findOrFail($id);
 
         // Hapus gambar lama jika ada
-        if ($post->image) {
-            Storage::delete('image/' . $post->image);
+        if ($post->image && $request->hasFile('fileImage') && $request->file('fileImage')->isValid()) {
+            Storage::delete('public/image/' . $post->image);
         }
 
-        $image = null;
-        if ($request->fileImage) {
+        $image = $post->image;
+        if ($request->hasFile('fileImage') && $request->file('fileImage')->isValid()) {
             $fileImageName = $this->generateRandomString();
-            $extension = $request->fileImage->extension();
+            $extension = $request->file('fileImage')->getClientOriginalExtension();
             $image = $fileImageName . '.' . $extension;
-            Storage::putFileAs('image', $request->fileImage, $image);
+            $request->file('fileImage')->storeAs('public/image', $image);
         }
 
         $post->update([
@@ -104,6 +138,8 @@ class PostController extends Controller
 
         return new PostDetailResource($post->loadMissing('author:id,username'));
     }
+
+
 
 
     public function destroy($id)
