@@ -12,8 +12,10 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('author:id,username')->get();
-        return PostDetailResource::collection($posts);
+        // $posts = Post::with('author:id,username')->get();
+        // return PostDetailResource::collection($posts);
+        $posts = Post::all();
+        return PostDetailResource::collection($posts->loadMissing('author:id,username'));
     }
 
     public function showDetails($id)
