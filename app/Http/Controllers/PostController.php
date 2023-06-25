@@ -52,13 +52,42 @@ class PostController extends Controller
         return new PostDetailResource($post->loadMissing('author:id,username'));
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $image = null;
+    //     $validated = $request->validate([
+    //         'title' => 'required|max:255',
+    //         'news_content' => 'required',
+    //     ]);
+    //     if ($request->fileImage) {
+    //         $fileImageName = $this->generateRandomString();
+    //         $extension = $request->fileImage->extension();
+    //         $image = $fileImageName . '.' . $extension;
+    //         Storage::putFileAs('image', $request->fileImage, $image);
+    //     }
+
+    //     $request['image'] = $image;
+    //     $post = Post::findOrFail($id);
+    //     $post->update($request->all());
+
+    //     return new PostDetailResource($post->loadMissing('author:id,username'));
+    // }
+
     public function update(Request $request, $id)
     {
-        $image = null;
         $validated = $request->validate([
             'title' => 'required|max:255',
             'news_content' => 'required',
         ]);
+
+        $post = Post::findOrFail($id);
+
+        // Hapus gambar lama jika ada
+        if ($post->image) {
+            Storage::delete('image/' . $post->image);
+        }
+
+        $image = null;
         if ($request->fileImage) {
             $fileImageName = $this->generateRandomString();
             $extension = $request->fileImage->extension();
@@ -66,12 +95,16 @@ class PostController extends Controller
             Storage::putFileAs('image', $request->fileImage, $image);
         }
 
-        $request['image'] = $image;
-        $post = Post::findOrFail($id);
-        $post->update($request->all());
+        $post->update([
+            'title' => $request->title,
+            'news_content' => $request->news_content,
+            'image' => $image,
+            'id_user' => Auth::user()->id,
+        ]);
 
         return new PostDetailResource($post->loadMissing('author:id,username'));
     }
+
 
     public function destroy($id)
     {
