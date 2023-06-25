@@ -38,15 +38,17 @@ class PostController extends Controller
             'news_content' => 'required',
         ]);
 
+        $image = null;
         if ($request->fileImage) {
             $fileImageName = $this->generateRandomString();
             $extension = $request->fileImage->extension();
-
-            Storage::putFileAs('image', $request->fileImage, $fileImageName . '.' . $extension);
+            $image = $fileImageName . '.' . $extension;
+            Storage::putFileAs('image', $request->fileImage, $image);
         }
-        $request['image'] = $fileImageName . '.' . $extension;
+        $request['image'] = $image;
         $request['id_user'] = Auth::user()->id;
         $post = Post::create($request->all());
+
         return new PostDetailResource($post->loadMissing('author:id,username'));
     }
 
