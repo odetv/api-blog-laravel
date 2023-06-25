@@ -21,9 +21,9 @@ class PostController extends Controller
         return new PostDetailResource($post);
     }
 
-    public function showEager($id)
-    {
-        $post = Post::findOrFail($id);
-        return new PostDetailResource($post);
-    }
+    // public function showEager($id)
+    // {
+    //     $post = Post::findOrFail($id);
+    //     return new PostDetailResource($post);
+    // }
 }
