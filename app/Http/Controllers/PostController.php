@@ -17,6 +17,12 @@ class PostController extends Controller
 
     public function showDetails($id)
     {
+        $post = Post::with('author:id,username')->findOrFail($id);
+        return new PostDetailResource($post);
+    }
+
+    public function showEager($id)
+    {
         $post = Post::findOrFail($id);
         return new PostDetailResource($post);
     }
