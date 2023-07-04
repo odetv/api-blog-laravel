@@ -1,5 +1,6 @@
 /.phpunit.cache
 /node_modules
+/database/db_blog-api.sql
 /public/build
 /public/hot
 /public/storage
