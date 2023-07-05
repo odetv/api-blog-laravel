@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: laravel-app
+        container_name: laravel-app
+        ports:
+            - 8000:8000
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        networks:
+            - laravel-network
+
+    db:
+        image: mariadb:latest
+        container_name: laravel-db
+        environment:
+            MYSQL_DATABASE: db_api-blog-sister
+            MYSQL_USER: root
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - laravel-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        depends_on:
+            - db
+        networks:
+            - laravel-network
+
+networks:
+    laravel-network:
+
+volumes:
+    dbdata:
