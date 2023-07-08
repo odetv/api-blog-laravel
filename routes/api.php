@@ -11,7 +11,11 @@ Route::get("/storage-link", function () {
     symlink($targetFolder, $linkFolder);
 });
 
+Route::post('/register', [AuthenticationController::class, 'register']); //Register
 Route::post('/login', [AuthenticationController::class, 'login']); //Login
+Route::post('/forgot-password', [AuthenticationController::class, 'forgotPassword']); //Forgot Password
+Route::post('/reset-password', [AuthenticationController::class, 'resetPassword'])->name('password.reset'); //Reset Password
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthenticationController::class, 'getUser']); //Get User
     Route::post('/logout', [AuthenticationController::class, 'logout']); //Logout
