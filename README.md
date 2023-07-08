@@ -14,12 +14,25 @@ Halo, saya `I Gede Gelgel Abdiutama`. Dalam repository ini saya membuat sebuah p
 
 ## Dokumentasi API
 
-### Fitur 1: Autentikasi Login & Logout
+### Fitur 1: Autentikasi Login-Register-Logout-Forgot Password
 
 ##### Login
 
 ```http
 POST /api/login
+```
+
+##### Register
+
+```http
+POST /api/register
+```
+
+##### Forgot Password
+
+```http
+POST /api/forgot-password
+POST /api/reset-password
 ```
 
 ##### Logout
@@ -28,11 +41,20 @@ POST /api/login
 GET /api/logout
 ```
 
-| Parameter       | Type     | Description           |
-| :-------------- | :------- | :-------------------- |
-| `email`         | `string` | Email **Required**    |
-| `password`      | `string` | Password **Required** |
-| `Authorization` | `string` | Bearer `token_api`    |
+| Parameter               | Type     | Description                            |
+| :---------------------- | :------- | :------------------------------------- |
+| `email`                 | `string` | Email **Required**                     |
+| `password`              | `string` | Password **Required**                  |
+| `Authorization`         | `string` | Bearer `token_api` **Required**        |
+| `firstname`             | `string` | First Name Account **Required**        |
+| `lastname`              | `string` | Last Name Account **Required**         |
+| `username`              | `string` | Username Account **Required**          |
+| `email`                 | `string` | Email Account **Required**             |
+| `password`              | `string` | Password Account **Required**          |
+| `token`                 | `string` | Token Reset Password **Required**      |
+| `email`                 | `string` | Email Forgot Password **Required**     |
+| `password`              | `string` | New Password **Required**              |
+| `password_confirmation` | `string` | Confirmation New Password **Required** |
 
 Tambahkan Token API yang diperoleh pada Header setiap request dan API siap digunakan.
 
