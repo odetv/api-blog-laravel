@@ -126,13 +126,13 @@ DEL /api/comment/{post_id}
 Clone project
 
 ```bash
-  git clone https://github.com/odetv/web-blog-api-laravel.git
+  git clone https://github.com/odetv/api-blog-laravel.git
 ```
 
 Masuk ke directory project
 
 ```bash
-  cd web-blog-api-laravel
+  cd api-blog-laravel
 ```
 
 Jalankan composer install
